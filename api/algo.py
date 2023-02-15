@@ -3,9 +3,10 @@ from shapely.geometry import Polygon, Point
 import json
 import pandas as pd
 
-#68.04 avec geopanda
-
 def algo(contenance):
+
+    #on souhaite télécharger le document json se trouvant à l'adresse :https://cadastre.data.gouv.fr/data/etalab-cadastre/2023-01-01/geojson/communes/74/74281/cadastre-74281-prefixes_sections.json.gz
+    #!wget https://cadastre.data.gouv.fr/data/etalab-cadastre/2023-01-01/geojson/communes/74/74281/cadastre-74281-prefixes_sections.json.gz 
 
     cadastre_path = "/home/lucien/Documents/vercel-flask/api/cadastre-74281-parcelles.json"
     with open(cadastre_path) as config_buffer:
