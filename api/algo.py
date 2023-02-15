@@ -1,5 +1,5 @@
 from shapely.geometry import Point
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 import json
 import pandas as pd
 
@@ -8,6 +8,7 @@ def algo(contenance):
     #on souhaite télécharger le document json se trouvant à l'adresse :https://cadastre.data.gouv.fr/data/etalab-cadastre/2023-01-01/geojson/communes/74/74281/cadastre-74281-prefixes_sections.json.gz
     #!wget https://cadastre.data.gouv.fr/data/etalab-cadastre/2023-01-01/geojson/communes/74/74281/cadastre-74281-prefixes_sections.json.gz 
 
+    #idée pour diminuer le poids du doc
     cadastre_path = "/home/lucien/Documents/vercel-flask/api/cadastre-74281-parcelles.json"
     with open(cadastre_path) as config_buffer:
             cadastre = json.loads(config_buffer.read())
@@ -16,21 +17,15 @@ def algo(contenance):
 
     #1) On récupère d'abord tous les polygônes correspondant au passerelle ayant la contenance indiquée
     liste_id = []
+    list_polygone = []
     for elem in cadastre["features"]:
         if "contenance" in elem["properties"]:
             test = elem["properties"]["contenance"]
             if test == contenance:
                 liste_id.append(elem["id"])
+                list_polygone.append(elem["geometry"]["coordinates"])
 
-    #on récupère cet id grâce à la contenance du cadatsre que l'on met en entrée
-    list_polygone = []
-    for id_test in liste_id:
-        for elem in cadastre["features"]: #cadastre["features"] est une liste de dictionnaires
-            id = elem["id"]
-            if id == id_test:
-                polygone = elem["geometry"]["coordinates"]
-                list_polygone.append(polygone)
-
+    
     #on veut transformer la liste de liste des polygônes en liste de tuples
 
     L3 = []
@@ -56,8 +51,6 @@ def algo(contenance):
 
 
     #2)On localise les points qui se situent dans ou près des polynômes extraits
-
-    #on veut transformer la liste de liste en liste de tuples
 
     #on veut trouver quel point de la liste L appartient aux polygones extraits
 
