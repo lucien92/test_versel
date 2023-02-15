@@ -13,8 +13,6 @@ def algo(contenance):
     with open(cadastre_path) as config_buffer:
             cadastre = json.loads(config_buffer.read())
 
-
-
     #1) On récupère d'abord tous les polygônes correspondant au passerelle ayant la contenance indiquée
     liste_id = []
     list_polygone = []
