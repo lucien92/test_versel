@@ -15,10 +15,9 @@ def algo(contenance):
     liste_id = []
     for elem in cadastre["features"]:
         if "contenance" in elem["properties"]:
-            test = elem["properties"]["contenance"]
+            test = str(elem["properties"]["contenance"])
             if test == contenance:
                 liste_id.append(elem["id"])
-
     #on récupère cet id grâce à la contenance du cadatsre que l'on met en entrée
     list_polygone = []
     for id_test in liste_id:
@@ -27,7 +26,6 @@ def algo(contenance):
             if id == id_test:
                 polygone = elem["geometry"]["coordinates"]
                 list_polygone.append(polygone)
-
     #on veut transformer la liste de liste des polygônes en liste de tuples
 
     L3 = []
@@ -124,7 +122,6 @@ def algo(contenance):
     for i in list_index:
         survivor.append(liste_id[i])
 
-    print("survie: ", survivor)
     #j = 0
     dic = {}
     for i, points in enumerate(list_points):
@@ -134,8 +131,8 @@ def algo(contenance):
         #on veut récupérer les numéro et nom_voie pour lesquels les éléments 12 et 13 de la liste df2 correspondent à lon et lat
         for j in range(len(df2)):
             if df2[j][12] == str(lon) and df2[j][13] == str(lat):
-                numero = df2[j][4]
-                nom_voie = df2[j][5]
+                numero = df2[j][2]
+                nom_voie = df2[j][4]
                 break
         #df2 = df.loc[(df["lon"] == str(lon)) & (df["lat"] == str(lat)), ["numero", "nom_voie"]] #manière claire de sélectionner des lignes et colonnes selon une liste de conditions séparées par des &
         # numero = df2["numero"].values[0]
@@ -149,7 +146,7 @@ def algo(contenance):
 
     print(dic)
     print(len(dic))
-
+    print(f'on a trouvé {len(dic)} sur {len(list_polygone)} parcelles')
 
 
     return dic

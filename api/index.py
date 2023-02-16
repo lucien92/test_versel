@@ -23,3 +23,6 @@ def result(variable): #opn reprend le nom de la variable qui a été définie da
      
      return render_template('result.html', result=result_final) #voir comment utiliser une variable dans le result.html
 
+# if __name__ == '__main__':
+#     app.debug = True
+#     app.run()
