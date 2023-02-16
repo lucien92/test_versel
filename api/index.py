@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask import Flask, render_template, request, redirect
 from flask import url_for
-from algo import algo
+from api.utils.algo import algo
 
 app = Flask(__name__)
 
