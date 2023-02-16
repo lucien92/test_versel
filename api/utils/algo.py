@@ -3,28 +3,36 @@ from shapely.geometry import Polygon
 import json
 # import pandas as pd
 
+#BUT AVANT LA MISE EN LIGNE: RECODER L'ALGO EN ENLEVANT PANDAS ET TESTER SI IL GARDE TOUJOURS DES BONNES PERFORMANCES.
 
 
 def algo(contenance):
 
-    #on souhaite télécharger le document json se trouvant à l'adresse :https://cadastre.data.gouv.fr/data/etalab-cadastre/2023-01-01/geojson/communes/74/74281/cadastre-74281-prefixes_sections.json.gz
+    contenance = 112
 
-    #idée pour diminuer le poids du doc
-    cadastre_path = "/home/lucien/Documents/vercel-flask/api/cadastre-74281-parcelles.json"
+    cadastre_path = "/home/lucien/Documents/app/api/data/cadastre-74281-parcelles.json"
     with open(cadastre_path) as config_buffer:
             cadastre = json.loads(config_buffer.read())
 
+
+
     #1) On récupère d'abord tous les polygônes correspondant au passerelle ayant la contenance indiquée
     liste_id = []
-    list_polygone = []
     for elem in cadastre["features"]:
         if "contenance" in elem["properties"]:
             test = elem["properties"]["contenance"]
             if test == contenance:
                 liste_id.append(elem["id"])
-                list_polygone.append(elem["geometry"]["coordinates"])
 
-    
+    #on récupère cet id grâce à la contenance du cadatsre que l'on met en entrée
+    list_polygone = []
+    for id_test in liste_id:
+        for elem in cadastre["features"]: #cadastre["features"] est une liste de dictionnaires
+            id = elem["id"]
+            if id == id_test:
+                polygone = elem["geometry"]["coordinates"]
+                list_polygone.append(polygone)
+
     #on veut transformer la liste de liste des polygônes en liste de tuples
 
     L3 = []
@@ -37,19 +45,38 @@ def algo(contenance):
         L3.append(polygon)
 
 
-    adresse_path = "/home/lucien/Documents/vercel-flask/api/adresses-74.csv"
-    df = pd.read_csv(adresse_path, sep=';', dtype = str)
+    # adresse_path = "/home/lucien/Documents/app/api/data/adresses-74.csv"
+    # df = pd.read_csv(adresse_path, sep=';', dtype = str)
+
+
+    with open("/home/lucien/Documents/app/api/data/adresses-74.csv", "r") as f:
+        df = f.readlines() #on a une liste de lignes, i.e de strings
+        #on veut avoir une liste de listes, où les ; sont remplacés par les , de la liste
+        df = [elem.split(";") for elem in df]
+        #on élémine la première ligne
+        df = df[1:]
 
     #on effectue un tri en enlevant toutes les lignes dont la colonne id ne commence pas par 74281, i.e pas à thonon
 
-    df2 = df[df['id'].str.startswith('74281')]
-    latitude = df['lat']
-    longitude = df['lon']
-    latitude = list(latitude)
-    longitude = list(longitude)
+    #df2 = df[df['id'].str.startswith('74281')] 
+    #on veut créer df2 une liste qui contient tous les éléments de df dont la première colonne commence par 74281
+    df2 = []
+    for elem in df:
+        if elem[0].startswith('74281'):
+            df2.append(elem)
+
+    #on veut créer une liste contenant la valeur de toutes les latitues
+    latitude = []
+    for elem in df2:
+        latitude.append(elem[13])
+    longitude = []
+    for elem in df2:
+        longitude.append(elem[12])
 
 
     #2)On localise les points qui se situent dans ou près des polynômes extraits
+
+    #on veut transformer la liste de liste en liste de tuples
 
     #on veut trouver quel point de la liste L appartient aux polygones extraits
 
@@ -106,24 +133,31 @@ def algo(contenance):
     for i in list_index:
         survivor.append(liste_id[i])
 
-
-    j = 0
+    print("survie: ", survivor)
+    #j = 0
     dic = {}
     for i, points in enumerate(list_points):
-        j += 1
+        #j += 1
         lon = points[0]
         lat = points[1]
-        df2 = df.loc[(df["lon"] == str(lon)) & (df["lat"] == str(lat)), ["numero", "nom_voie"]] #manière claire de sélectionner des lignes et colonnes selon une liste de conditions séparées par des &
-        numero = df2["numero"].values[0]
-        nom_voie = df2["nom_voie"].values[0]
+        #on veut récupérer les numéro et nom_voie pour lesquels les éléments 12 et 13 de la liste df2 correspondent à lon et lat
+        for j in range(len(df2)):
+            if df2[j][12] == str(lon) and df2[j][13] == str(lat):
+                numero = df2[j][4]
+                nom_voie = df2[j][5]
+                break
+        #df2 = df.loc[(df["lon"] == str(lon)) & (df["lat"] == str(lat)), ["numero", "nom_voie"]] #manière claire de sélectionner des lignes et colonnes selon une liste de conditions séparées par des &
+        # numero = df2["numero"].values[0]
+        # nom_voie = df2["nom_voie"].values[0]
+
         if survivor[i][-4:] not in list(dic.keys()):
             dic[survivor[i][-4:]] = [(numero, nom_voie)]
         else:
             if (numero, nom_voie) not in dic[survivor[i][-4:]]:
                 dic[survivor[i][-4:]].append((numero, nom_voie))
 
-    if j== 0:
-        pass
+    # if j== 0:
+    #     pass
 
     print(dic)
     print(len(dic))
