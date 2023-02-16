@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask import Flask, render_template, request, redirect
 from flask import url_for
-from api.utils.algo import algo
+from api.utils.algo import algo #les serverless functions doivent se trouver dans un dossier en dessous de index.py
 
 app = Flask(__name__)
 
