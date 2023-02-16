@@ -2,8 +2,9 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 import json
 # import pandas as pd
-# def algo(contenance):
-#     return contenance
+
+def algo(contenance):
+    return contenance
 
 # def algo(contenance):
 
