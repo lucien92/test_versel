@@ -1,14 +1,9 @@
 from shapely.geometry import Point
 from shapely.geometry import Polygon
 import json
-# import pandas as pd
-
-#BUT AVANT LA MISE EN LIGNE: RECODER L'ALGO EN ENLEVANT PANDAS ET TESTER SI IL GARDE TOUJOURS DES BONNES PERFORMANCES.
 
 
 def algo(contenance):
-
-    contenance = 112
 
     cadastre_path = "/home/lucien/Documents/app/api/data/cadastre-74281-parcelles.json"
     with open(cadastre_path) as config_buffer:
@@ -43,10 +38,6 @@ def algo(contenance):
                 L2.append(tuple(elem2))
         polygon = Polygon(L2)
         L3.append(polygon)
-
-
-    # adresse_path = "/home/lucien/Documents/app/api/data/adresses-74.csv"
-    # df = pd.read_csv(adresse_path, sep=';', dtype = str)
 
 
     with open("/home/lucien/Documents/app/api/data/adresses-74.csv", "r") as f:
@@ -155,9 +146,6 @@ def algo(contenance):
         else:
             if (numero, nom_voie) not in dic[survivor[i][-4:]]:
                 dic[survivor[i][-4:]].append((numero, nom_voie))
-
-    # if j== 0:
-    #     pass
 
     print(dic)
     print(len(dic))

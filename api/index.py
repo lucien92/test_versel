@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask import Flask, render_template, request, redirect
 from flask import url_for
-from api.utils.algo import algo #les serverless functions doivent se trouver dans un dossier en dessous de index.py
+from utils.algo import algo #les serverless functions doivent se trouver dans un dossier en dessous de index.py
 
 app = Flask(__name__)
 
@@ -22,3 +22,7 @@ def result(variable): #opn reprend le nom de la variable qui a été définie da
      result_final = algo(contenance) #OK ça devrait être bon, à tester en attendant et en améliorant le rendu de la page
      
      return render_template('result.html', result=result_final) #voir comment utiliser une variable dans le result.html
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run()
