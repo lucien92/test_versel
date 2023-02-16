@@ -2,8 +2,9 @@ from shapely.geometry import Point
 from shapely.geometry import Polygon
 import json
 # import pandas as pd
-def algo(contenance):
-    return contenance
+# def algo(contenance):
+#     return contenance
+
 # def algo(contenance):
 
 #     #on souhaite télécharger le document json se trouvant à l'adresse :https://cadastre.data.gouv.fr/data/etalab-cadastre/2023-01-01/geojson/communes/74/74281/cadastre-74281-prefixes_sections.json.gz
